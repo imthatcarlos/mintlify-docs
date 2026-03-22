@@ -74,6 +74,12 @@
             ]
           },
           {
+            "group": "Strategies",
+            "pages": [
+              "protocol/strategies/venice-inference"
+            ]
+          },
+          {
             "group": "Governance",
             "pages": [
               "protocol/governance/overview",

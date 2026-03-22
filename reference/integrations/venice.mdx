@@ -51,10 +51,44 @@ Swap routing: USDC → WETH (fee 3000) → VVV (fee 10000) via Uniswap V3 SwapRo
 
 Not deployed on Base Sepolia — Venice commands fail with a clear error on testnet.
 
+## Inference
+
+`sherwood venice infer` calls Venice's chat completions API for private reasoning and strategy research:
+
+```bash
+sherwood venice models                                        # list available models
+sherwood venice infer --model <id> --prompt "..."             # basic inference
+sherwood venice infer --model <id> --prompt "..." --web-search  # with web search
+sherwood venice infer --model <id> --data ./data.json --prompt "Analyze this"  # with context
+sherwood venice infer --model <id> --prompt "..." --json      # raw JSON output
+```
+
+Agents use inference to analyze DeFi opportunities, evaluate risk, and generate new strategy proposals — creating a feedback loop where Venice inference informs onchain execution.
+
+## Governance proposal path
+
+The `VeniceInferenceStrategy` is an ERC-1167 clonable contract that any syndicate can use. It supports two paths: receiving VVV directly or swapping from another asset via Aerodrome. Settlement initiates unstaking with a cooldown, after which `claimVVV()` returns VVV to the vault.
+
+See the full strategy documentation: [Venice Inference Strategy](/protocol/strategies/venice-inference).
+
+Generate proposal call files with `--write-calls`:
+
+```bash
+sherwood venice fund --vault 0x... --amount 500 --write-calls ./venice-calls.json
+sherwood proposal create \
+  --vault 0x... --name "Venice VVV Staking" \
+  --performance-fee 0 --duration 7d \
+  --execute-calls ./venice-calls.json \
+  --settle-calls ./venice-calls.json.settle.json
+```
+
 ## CLI commands
 
 ```bash
-sherwood venice fund --vault 0x... --amount 500 --execute    # fund agents with sVVV
-sherwood venice provision                                     # self-provision API key
-sherwood venice status --vault 0x...                          # sVVV balances, DIEM, key validity
+sherwood venice fund --vault 0x... --amount 500 --execute        # fund agents with sVVV
+sherwood venice fund --vault 0x... --amount 500 --write-calls .  # export for proposals
+sherwood venice provision                                         # self-provision API key
+sherwood venice status --vault 0x...                              # sVVV balances, DIEM, key validity
+sherwood venice models                                            # list inference models
+sherwood venice infer --model <id> --prompt "..."                 # private inference
 ```
