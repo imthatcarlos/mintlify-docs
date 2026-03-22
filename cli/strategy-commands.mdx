@@ -1,0 +1,104 @@
+---
+title: "Strategy Commands"
+description: "Clone strategy templates, build batch calls, and submit governance proposals"
+icon: "cubes"
+---
+
+Strategy templates are ERC-1167 clonable contracts deployed once per chain. Each proposal clones a template, initializes it with custom parameters, then uses the clone in governor batch calls.
+
+## `strategy list`
+
+Show available strategy templates and their deployed addresses.
+
+```bash
+sherwood strategy list
+```
+
+## `strategy clone <template>`
+
+Clone a template and initialize it. Returns the clone address for use in proposal batch calls.
+
+```bash
+sherwood strategy clone moonwell-supply \
+  --vault 0x... \
+  --amount 10 \
+  --min-redeem 9.9 \
+  --token USDC
+```
+
+The clone is deployed and initialized on-chain. The proposer (your wallet) pays gas for both transactions.
+
+## `strategy propose <template>`
+
+All-in-one command: clone + initialize + build batch calls + submit proposal (or write JSON files).
+
+### Write calls to files (for manual proposal creation)
+
+```bash
+sherwood strategy propose venice-inference \
+  --vault 0x... \
+  --amount 500 --asset USDC --min-vvv 900 \
+  --write-calls ./venice-calls
+
+# Then submit manually:
+sherwood proposal create \
+  --vault 0x... \
+  --name "Venice Inference" \
+  --performance-fee 0 --duration 7d \
+  --execute-calls ./venice-calls/execute.json \
+  --settle-calls ./venice-calls/settle.json
+```
+
+### Submit directly
+
+```bash
+sherwood strategy propose moonwell-supply \
+  --vault 0x... \
+  --amount 10000 --min-redeem 9900 --token USDC \
+  --name "Moonwell USDC Yield" \
+  --description "Supply 10k USDC for 7 days" \
+  --performance-fee 1000 --duration 7d
+```
+
+## Template-Specific Options
+
+### moonwell-supply
+
+| Flag | Description | Default |
+|------|------------|---------|
+| `--amount <n>` | Amount of asset to supply | required |
+| `--min-redeem <n>` | Min asset on settlement | same as amount |
+| `--token <symbol>` | Asset token (USDC, WETH) | USDC |
+
+### venice-inference
+
+| Flag | Description | Default |
+|------|------------|---------|
+| `--amount <n>` | Amount of asset to deploy | required |
+| `--asset <symbol>` | Asset token (USDC, VVV, or address) | USDC |
+| `--agent <address>` | Agent wallet receiving sVVV | your wallet |
+| `--min-vvv <n>` | Min VVV from swap (required if asset != VVV) | — |
+| `--single-hop` | Direct asset-to-VVV swap | false |
+
+### aerodrome-lp
+
+| Flag | Description | Default |
+|------|------------|---------|
+| `--token-a <address>` | Token A address | required |
+| `--token-b <address>` | Token B address | required |
+| `--amount-a <n>` | Token A amount | required |
+| `--amount-b <n>` | Token B amount | required |
+| `--stable` | Stable pool (correlated assets) | false |
+| `--gauge <address>` | Gauge for AERO rewards | none |
+| `--lp-token <address>` | LP token address | required |
+| `--min-a-out <n>` | Min token A on settle | 0 |
+| `--min-b-out <n>` | Min token B on settle | 0 |
+
+## How It Works
+
+1. **Clone**: The CLI deploys an ERC-1167 minimal proxy pointing to the template singleton. Cost: ~50k gas.
+2. **Initialize**: Calls `strategy.initialize(vault, proposer, data)` with your parameters. Cost: ~100-200k gas.
+3. **Build calls**: Generates `execute.json` and `settle.json` with the correct approve + execute/settle batch calls.
+4. **Submit**: Either writes files for `proposal create` or calls `governor.propose()` directly.
+
+The vault trusts the governor — no separate allowlisting step is needed for strategy clones.

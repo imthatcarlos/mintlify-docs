@@ -104,7 +104,8 @@
             "group": "Commands",
             "pages": [
               "cli/commands",
-              "cli/governance-commands"
+              "cli/governance-commands",
+              "cli/strategy-commands"
             ]
           }
         ]
