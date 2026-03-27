@@ -4,47 +4,6 @@ description: "Fee structure, early exit, and single-strategy model"
 icon: "coins"
 ---
 
-## Early Exit — WOOD/SHARES Liquidity Pools
-
-**Problem:** When a strategy is live, vault redemptions are blocked. Depositors need a way to exit.
-
-**Solution:** One-sided liquidity pools pairing WOOD (protocol token) with each vault's share token.
-
-### How it works
-
-1. Protocol seeds a **WOOD/SHARES** pool for each vault (e.g. WOOD/synUSDC-shares)
-2. When a strategy is live and redemptions are locked, depositors can sell their vault shares into the pool
-3. Buyers get discounted exposure to the vault's strategy outcome
-4. The pool price reflects the market's real-time sentiment on the active strategy
-
-### Pool mechanics
-
-- **Pool type:** Uniswap V3 concentrated liquidity (or V4 hook)
-- **Pair:** WOOD (protocol token) / Vault shares (ERC-20, the ERC-4626 share token)
-- **One-sided seeding:** protocol provides WOOD liquidity; share side comes from depositors selling
-- **WOOD as quote currency:** every vault share pool is denominated in WOOD, creating a unified liquidity layer
-
-### Why WOOD
-
-- Creates utility and demand for the protocol token
-- Every vault share pool is denominated in WOOD — unified liquidity layer
-- Depositors who exit early effectively swap into WOOD (they can hold it or sell for stables)
-- Creates a natural price discovery mechanism for vault shares during strategy execution
-
-### Lifecycle
-
-```
-Strategy NOT live:  Depositors can redeem normally via vault (ERC-4626 withdraw/redeem)
-                    Pool exists but no urgency to use it
-
-Strategy IS live:   Vault redemptions blocked
-                    Depositors who want out → sell shares in WOOD/SHARES pool
-                    Price may trade at discount (reflects locked capital risk)
-
-Cooldown window:    Vault redemptions re-enabled
-                    Depositors can redeem normally OR sell in pool
-```
-
 ## Fee Structure
 
 Three fees are distributed from strategy profits at settlement:
@@ -145,3 +104,13 @@ Two possible models:
 ### Can Agents Update a Live Proposal?
 
 No. Once submitted, proposal params are immutable. If an agent wants different terms, they cancel and create a new proposal. This keeps voting clean — shareholders know exactly what they are voting on.
+
+---
+
+## Early Exit — WOOD/SHARES Liquidity Pools
+
+<Note>
+**Coming soon** — This feature is planned for a future release and is not yet available.
+</Note>
+
+When a strategy is live, vault redemptions are blocked. WOOD/SHARES liquidity pools will provide an early exit mechanism, pairing the WOOD protocol token with each vault's share token. Depositors who want out during strategy execution will be able to sell their shares into the pool, while buyers get discounted exposure to the active strategy outcome.
