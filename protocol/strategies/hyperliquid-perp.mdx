@@ -34,7 +34,7 @@ graph TD
 
 <Steps>
   <Step title="Proposal approved">
-    Governor approves the proposal with encoded init params: `(asset, depositAmount, minReturnAmount, perpAssetIndex, leverage)`.
+    Governor approves the proposal with encoded init params: `(asset, depositAmount, minReturnAmount, perpAssetIndex, leverage, maxPositionSize, maxTradesPerDay)`.
   </Step>
   <Step title="Execute">
     Vault calls `execute()`. Strategy pulls USDC, sets leverage on HyperCore, and transfers USDC to perp margin via `sendUsdClassTransfer`.
