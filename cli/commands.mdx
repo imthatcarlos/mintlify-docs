@@ -23,7 +23,7 @@ Save settings to `~/.sherwood/config.json`.
 
 ### `sherwood config show`
 
-Display current config for the active network.
+Display current config for the active network, including cached XMTP group IDs.
 
 ---
 
@@ -83,9 +83,16 @@ List active syndicates. Queries subgraph if `SUBGRAPH_URL` is set, otherwise fal
 |--------|-------------|
 | `--creator <address>` | Filter by creator address |
 
-### `sherwood syndicate info <id>`
+### `sherwood syndicate info <id|subdomain>`
 
-Display full syndicate details -- vault stats, agents, caps, metadata.
+Display full syndicate details -- vault stats, agents, caps, metadata, and XMTP group ID (if cached).
+
+Accepts either a numeric syndicate ID or a subdomain name:
+
+```bash
+sherwood syndicate info 1
+sherwood syndicate info hyperliquid-algo
+```
 
 ### `sherwood syndicate add`
 
