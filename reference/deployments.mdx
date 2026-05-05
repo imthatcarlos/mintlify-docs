@@ -71,7 +71,7 @@ Not all chains have the same protocol integrations. The CLI handles this gracefu
 | SyndicateVaultImpl | `0xfce4bcE08E9C047E4736f75C2B8557e2754Ce36A` | — | `0xF4720523325f9A4546F43391484DCd1D28dFc266` | `0x2cbBe36Cf907A2BB410bacB0e4Fd632C7b012846` |
 
 <Note>
-Base and HyperEVM were both redeployed on the V1.5 strategy-on-proposal model. Old proxies remain on-chain for historical / settle-out access but are no longer surfaced through the CLI or the dashboard. Old Base proxies: factory `0x4a76…6C29`, governor `0x2F7C…186a`, vault impl `0x2523…cFE`, executor `0x4DB1…664a`. Old HyperEVM proxies: factory `0x7e7F…48d3`, governor `0x915F…7C21`, registry `0x121A…4069`, vault impl `0xB454…ECba`, executor `0xbEDa…9F5E`. Strategy templates listed below have not yet been redeployed against the new factories.
+Base and HyperEVM were both redeployed on the V1.5 strategy-on-proposal model. Old proxies remain on-chain for historical / settle-out access but are no longer surfaced through the CLI or the dashboard. Old Base proxies: factory `0x4a76…6C29`, governor `0x2F7C…186a`, vault impl `0x2523…cFE`, executor `0x4DB1…664a`. Old HyperEVM proxies: factory `0x7e7F…48d3`, governor `0x915F…7C21`, registry `0x121A…4069`, vault impl `0xB454…ECba`, executor `0xbEDa…9F5E`. HyperEVM strategy templates have been redeployed against the new factory; Base strategy templates are still pending.
 </Note>
 
 ### Strategy Templates
@@ -112,8 +112,8 @@ ERC-1167 clonable singletons. Each proposal clones a template and initializes it
 
 | Template | Address |
 |----------|---------|
-| HyperliquidPerpStrategy | `0xa2B8Ad8695FdE05bf1DA4aBaef1608045A53Ba4E` |
-| HyperliquidGridStrategy | `0x49BFDae8353ba15954924274573D427211CCe41b` |
+| HyperliquidPerpStrategy | `0x2C128810F881055AE186EBBE5bcF33031D325dA1` |
+| HyperliquidGridStrategy | `0x0D62944862996791a9BCE992872F9Fa8E3162B49` |
 
 ### Tokens
 
