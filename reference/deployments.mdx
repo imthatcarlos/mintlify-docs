@@ -64,10 +64,15 @@ Not all chains have the same protocol integrations. The CLI handles this gracefu
 
 | Contract | Base | Base Sepolia | Robinhood L2 Testnet | HyperEVM |
 |----------|------|-------------|---------------------|----------|
-| SyndicateFactory | `0x4a761D4C101a3aaDE53C7aA2b5c3278b217B6C29` | `0x121AaC2B96Ec365e457fcCc1C2ED5a6142064069` | `0x6d026e2f5Ff0C34A01690EC46Cb601B8fF391985` | `0x4085EEa1E6d3D20E84D8Ae14964FAb8b899DA40a` |
-| SyndicateGovernor | `0x2F7C27007AC5Bad8400EaDBcdaa767597cfE186a` | `0xE5ecf2B06E3f3e298B632C0cf6575f9d9422F55E` | `0xd882056ba6b0aEd8908c541884B327121E2f2C9C` | `0x7B4a2f3480FE101f88b2e3547A1bCf3eaaDE46bc` |
-| BatchExecutorLib | `0x4DB19b6F8A0B299fD73c40A72B265cfBCF64664a` | `0x847758DDb37F1709da5bB3d3F8aC395938e6a84f` | `0x1493f5a7E5d82e1e56c34e2Ba300f56F97186017` | `0xdE317B80E66c5E8872C63B0620E2CbB73b5Bcd49` |
-| SyndicateVaultImpl | `0x2523dc3063c6166593DC314B4C3e3C5e216decFE` | — | `0xF4720523325f9A4546F43391484DCd1D28dFc266` | `0x09005FEF3EF1879Af207C79416ae9d5059437bd4` |
+| SyndicateFactory | `0x4a761D4C101a3aaDE53C7aA2b5c3278b217B6C29` | `0x121AaC2B96Ec365e457fcCc1C2ED5a6142064069` | `0x6d026e2f5Ff0C34A01690EC46Cb601B8fF391985` | `0xd05Ae0E8bcf13075C29817c805d6Cc14F214393a` |
+| SyndicateGovernor | `0x2F7C27007AC5Bad8400EaDBcdaa767597cfE186a` | `0xE5ecf2B06E3f3e298B632C0cf6575f9d9422F55E` | `0xd882056ba6b0aEd8908c541884B327121E2f2C9C` | `0x67AD3D5F3d127Ef923Fd6f67b178633c408D3fd3` |
+| GuardianRegistry | — | — | — | `0x8b5710EB4e2fA639F364Dcc3F3B30c8f12F460b9` |
+| BatchExecutorLib | `0x4DB19b6F8A0B299fD73c40A72B265cfBCF64664a` | `0x847758DDb37F1709da5bB3d3F8aC395938e6a84f` | `0x1493f5a7E5d82e1e56c34e2Ba300f56F97186017` | `0x2c454bEF1b09c8a306a7058b8B510bF0DfF7179D` |
+| SyndicateVaultImpl | `0x2523dc3063c6166593DC314B4C3e3C5e216decFE` | — | `0xF4720523325f9A4546F43391484DCd1D28dFc266` | `0x2cbBe36Cf907A2BB410bacB0e4Fd632C7b012846` |
+
+<Note>
+HyperEVM was redeployed on the V1.5 strategy-on-proposal model. Old proxies (factory `0x7e7F…48d3`, governor `0x915F…7C21`, registry `0x121A…4069`, vault impl `0xB454…ECba`, executor `0xbEDa…9F5E`) remain on-chain for historical / settle-out access but are no longer surfaced through the CLI or the dashboard. Strategy templates listed below have not yet been redeployed against the new factory.
+</Note>
 
 ### Strategy Templates
 
