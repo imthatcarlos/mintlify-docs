@@ -64,26 +64,36 @@ Not all chains have the same protocol integrations. The CLI handles this gracefu
 
 | Contract | Base | Base Sepolia | Robinhood L2 Testnet | HyperEVM |
 |----------|------|-------------|---------------------|----------|
-| SyndicateFactory | `0x4a761D4C101a3aaDE53C7aA2b5c3278b217B6C29` | `0x121AaC2B96Ec365e457fcCc1C2ED5a6142064069` | `0x6d026e2f5Ff0C34A01690EC46Cb601B8fF391985` | `0x4085EEa1E6d3D20E84D8Ae14964FAb8b899DA40a` |
-| SyndicateGovernor | `0x2F7C27007AC5Bad8400EaDBcdaa767597cfE186a` | `0xE5ecf2B06E3f3e298B632C0cf6575f9d9422F55E` | `0xd882056ba6b0aEd8908c541884B327121E2f2C9C` | `0x7B4a2f3480FE101f88b2e3547A1bCf3eaaDE46bc` |
-| BatchExecutorLib | `0x4DB19b6F8A0B299fD73c40A72B265cfBCF64664a` | `0x847758DDb37F1709da5bB3d3F8aC395938e6a84f` | `0x1493f5a7E5d82e1e56c34e2Ba300f56F97186017` | `0xdE317B80E66c5E8872C63B0620E2CbB73b5Bcd49` |
-| SyndicateVaultImpl | `0x2523dc3063c6166593DC314B4C3e3C5e216decFE` | — | `0xF4720523325f9A4546F43391484DCd1D28dFc266` | `0x09005FEF3EF1879Af207C79416ae9d5059437bd4` |
+| SyndicateFactory | `0xAC74EC56858d7F1f7618c8e77F65Fc26aDf33c82` | `0x121AaC2B96Ec365e457fcCc1C2ED5a6142064069` | `0x6d026e2f5Ff0C34A01690EC46Cb601B8fF391985` | `0xd05Ae0E8bcf13075C29817c805d6Cc14F214393a` |
+| SyndicateGovernor | `0x9Fd3c87B34F254e3c5652A0394B9780c2F05d367` | `0xE5ecf2B06E3f3e298B632C0cf6575f9d9422F55E` | `0xd882056ba6b0aEd8908c541884B327121E2f2C9C` | `0x67AD3D5F3d127Ef923Fd6f67b178633c408D3fd3` |
+| GuardianRegistry | `0x49E4163b5e4b23F8f3d469Cf6fa197FB6b06A26E` | — | — | `0x8b5710EB4e2fA639F364Dcc3F3B30c8f12F460b9` |
+| BatchExecutorLib | `0xbC79FbD5036C1Cc4A9d10BDf8628BF09a558496E` | `0x847758DDb37F1709da5bB3d3F8aC395938e6a84f` | `0x1493f5a7E5d82e1e56c34e2Ba300f56F97186017` | `0x2c454bEF1b09c8a306a7058b8B510bF0DfF7179D` |
+| SyndicateVaultImpl | `0xfce4bcE08E9C047E4736f75C2B8557e2754Ce36A` | — | `0xF4720523325f9A4546F43391484DCd1D28dFc266` | `0x2cbBe36Cf907A2BB410bacB0e4Fd632C7b012846` |
+
+<Note>
+Base and HyperEVM were both redeployed on the V1.5 strategy-on-proposal model. Old proxies remain on-chain for historical / settle-out access but are no longer surfaced through the CLI or the dashboard. Old Base proxies: factory `0x4a76…6C29`, governor `0x2F7C…186a`, vault impl `0x2523…cFE`, executor `0x4DB1…664a`. Old HyperEVM proxies: factory `0x7e7F…48d3`, governor `0x915F…7C21`, registry `0x121A…4069`, vault impl `0xB454…ECba`, executor `0xbEDa…9F5E`. HyperEVM strategy templates have been redeployed against the new factory; Base strategy templates are still pending.
+</Note>
 
 ### Strategy Templates
 
 ERC-1167 clonable singletons. Each proposal clones a template and initializes it with custom parameters.
 
-**Base:**
+**Base — V1.5 templates:**
+
+These V1.5 templates implement `IStrategy.onLiveDeposit` + `_positionValue` and clone correctly against the V1.5 factory `0xAC74…3c82`. MoonwellSupply, WstETHMoonwell, and the Hyperliquid templates report live NAV (`valid=true`) — the vault stays open at fair NAV during their active proposals; the rest report `valid=false` and route through the async-redeem queue.
 
 | Template | Address |
 |----------|---------|
-| MoonwellSupplyStrategy | `0x649f8d24096a5eb17b8C73ee5113825AcA259F00` |
-| AerodromeLPStrategy | `0x6ccdD48C6A83cCdD6712DEB02E85FbEA8CF426CE` |
-| VeniceInferenceStrategy | `0x49BFDae8353ba15954924274573D427211CCe41b` |
-| WstETHMoonwellStrategy | `0xA31851Ab35F9992b0411749ec02Df053e904D1e6` |
-| MamoYieldStrategy | `0x9ca8A9B75a46261F107B610b634ecE69D7E6DF42` |
-| PortfolioStrategy | `0x7865eEA4063c22d0F55FdD412D345495c7b73f64` |
-| UniswapSwapAdapter | `0x121AaC2B96Ec365e457fcCc1C2ED5a6142064069` |
+| MoonwellSupplyStrategy | `0xb9Cd6d6720fc224508A07f0e43254A3cD65770E0` |
+| AerodromeLPStrategy | `0x6fba9a6D3F40AA1848Ad196564B27a430D29FdB0` |
+| VeniceInferenceStrategy | `0x0dDFf301F8AeB9B95627277f70bb6824CEFf5dF3` |
+| WstETHMoonwellStrategy | `0x23d145Bd100599C7418164FEae235bcE391Ae032` |
+| MamoYieldStrategy | `0x73b9cdC8cAf8853AfE299E144A40e3D51E399463` |
+| PortfolioStrategy | `0x42069e51c415f4BF4442D80F1532Bd38140Bd135` |
+| UniswapSwapAdapter | `0x679400a781A66d801C20DfD9E0020704e21e9d54` |
+
+V1 templates (kept on-chain for in-flight settle-out against the old factory only):
+MoonwellSupply `0x649f…9F00`, AerodromeLP `0x6ccd…26CE`, VeniceInference `0x49BF…E41b`, WstETHMoonwell `0xA318…D1e6`, MamoYield `0x9ca8…DF42`, Portfolio `0x7865…3f64`.
 
 **Base Sepolia:**
 
@@ -107,8 +117,8 @@ ERC-1167 clonable singletons. Each proposal clones a template and initializes it
 
 | Template | Address |
 |----------|---------|
-| HyperliquidPerpStrategy | `0xa2B8Ad8695FdE05bf1DA4aBaef1608045A53Ba4E` |
-| HyperliquidGridStrategy | `0x49BFDae8353ba15954924274573D427211CCe41b` |
+| HyperliquidPerpStrategy | `0xC0fA169fdbBb3638AdE917A5B8A9A87caf90d91e` |
+| HyperliquidGridStrategy | `0x20348e428050031647d671F0e24752C01D4b7379` |
 
 ### Tokens
 
