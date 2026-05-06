@@ -78,19 +78,22 @@ Base and HyperEVM were both redeployed on the V1.5 strategy-on-proposal model. O
 
 ERC-1167 clonable singletons. Each proposal clones a template and initializes it with custom parameters.
 
-**Base:**
+**Base — V1.5 templates:**
 
-V1 templates (below) do not implement `IStrategy.onLiveDeposit` introduced in V1.5 and therefore cannot be cloned against the new V1.5 factory `0xAC74…3c82`. They remain on-chain for in-flight settle-out only. V1.5 Base templates pending redeploy.
+These V1.5 templates implement `IStrategy.onLiveDeposit` + `_positionValue` and clone correctly against the V1.5 factory `0xAC74…3c82`. MoonwellSupply, WstETHMoonwell, and the Hyperliquid templates report live NAV (`valid=true`) — the vault stays open at fair NAV during their active proposals; the rest report `valid=false` and route through the async-redeem queue.
 
-| Template | V1 address (settle-out only) |
-|----------|------------------------------|
-| MoonwellSupplyStrategy | `0x649f8d24096a5eb17b8C73ee5113825AcA259F00` |
-| AerodromeLPStrategy | `0x6ccdD48C6A83cCdD6712DEB02E85FbEA8CF426CE` |
-| VeniceInferenceStrategy | `0x49BFDae8353ba15954924274573D427211CCe41b` |
-| WstETHMoonwellStrategy | `0xA31851Ab35F9992b0411749ec02Df053e904D1e6` |
-| MamoYieldStrategy | `0x9ca8A9B75a46261F107B610b634ecE69D7E6DF42` |
-| PortfolioStrategy | `0x7865eEA4063c22d0F55FdD412D345495c7b73f64` |
+| Template | Address |
+|----------|---------|
+| MoonwellSupplyStrategy | `0xb9Cd6d6720fc224508A07f0e43254A3cD65770E0` |
+| AerodromeLPStrategy | `0x6fba9a6D3F40AA1848Ad196564B27a430D29FdB0` |
+| VeniceInferenceStrategy | `0x0dDFf301F8AeB9B95627277f70bb6824CEFf5dF3` |
+| WstETHMoonwellStrategy | `0x23d145Bd100599C7418164FEae235bcE391Ae032` |
+| MamoYieldStrategy | `0x73b9cdC8cAf8853AfE299E144A40e3D51E399463` |
+| PortfolioStrategy | _pending separate redeploy (Portfolio + UniswapSwapAdapter)_ |
 | UniswapSwapAdapter | `0x121AaC2B96Ec365e457fcCc1C2ED5a6142064069` |
+
+V1 templates (kept on-chain for in-flight settle-out against the old factory only):
+MoonwellSupply `0x649f…9F00`, AerodromeLP `0x6ccd…26CE`, VeniceInference `0x49BF…E41b`, WstETHMoonwell `0xA318…D1e6`, MamoYield `0x9ca8…DF42`, Portfolio `0x7865…3f64`.
 
 **Base Sepolia:**
 
@@ -114,8 +117,8 @@ V1 templates (below) do not implement `IStrategy.onLiveDeposit` introduced in V1
 
 | Template | Address |
 |----------|---------|
-| HyperliquidPerpStrategy | `0x2C128810F881055AE186EBBE5bcF33031D325dA1` |
-| HyperliquidGridStrategy | `0x0D62944862996791a9BCE992872F9Fa8E3162B49` |
+| HyperliquidPerpStrategy | `0xC0fA169fdbBb3638AdE917A5B8A9A87caf90d91e` |
+| HyperliquidGridStrategy | `0x20348e428050031647d671F0e24752C01D4b7379` |
 
 ### Tokens
 
