@@ -80,8 +80,10 @@ ERC-1167 clonable singletons. Each proposal clones a template and initializes it
 
 **Base:**
 
-| Template | Address |
-|----------|---------|
+V1 templates (below) do not implement `IStrategy.onLiveDeposit` introduced in V1.5 and therefore cannot be cloned against the new V1.5 factory `0xAC74…3c82`. They remain on-chain for in-flight settle-out only. V1.5 Base templates pending redeploy.
+
+| Template | V1 address (settle-out only) |
+|----------|------------------------------|
 | MoonwellSupplyStrategy | `0x649f8d24096a5eb17b8C73ee5113825AcA259F00` |
 | AerodromeLPStrategy | `0x6ccdD48C6A83cCdD6712DEB02E85FbEA8CF426CE` |
 | VeniceInferenceStrategy | `0x49BFDae8353ba15954924274573D427211CCe41b` |
