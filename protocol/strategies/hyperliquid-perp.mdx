@@ -33,15 +33,21 @@ graph TD
 ## Lifecycle
 
 ```
-Pending → execute() → Executed → (trade actions) → settle() → Settled → sweep
+Pending → execute() → Executed → (trade actions)
+        → initiateReturn() → wait ≥1 block → settle() → Settled → sweep
 ```
 
 | Phase | What happens | Who calls |
 |-------|-------------|-----------|
-| **Execute** | Pull USDC from vault → `sendUsdClassTransfer` to perp margin (leverage is set off-chain by the keeper via `updateLeverage` API call before the proposal opens — Hyperliquid's CoreWriter has no on-chain leverage action) | Governor (proposal execution) |
-| **Executed** | Proposer opens/closes positions, updates stop-loss, or lowers `minReturnAmount` via `updateParams` | Proposer only |
-| **Settle** | Close any open position + request async USD transfer back to the EVM side | Governor (proposal settlement) |
-| **Sweep** | `sweepToVault()` pushes USDC to the vault when it arrives. Callable by anyone; repeatable for partial arrivals. | Anyone |
+| **Execute** | Pull USDC from vault → bridge EVM→HC spot via Circle's `CoreDepositWallet.deposit` → `sendUsdClassTransfer` spot→perp. Leverage is set off-chain by the keeper via `updateLeverage` API call before the proposal opens — Hyperliquid's CoreWriter has no on-chain leverage action. | Governor (proposal execution) |
+| **Executed** | Proposer opens/closes positions, updates stop-loss via `updateParams` | Proposer only |
+| **Initiate return** (path 1) | Cancel stop-loss, force-close positions, queue perp→spot class transfer, queue spot→EVM bridge via `sendAsset` to USDC system address. Async — HC processes post-block; USDC arrives on the strategy's EVM address in the next block. | Proposer anytime; anyone after proposal duration expired |
+| **Settle** (path 2) | Push the strategy's now-arrived EVM USDC to the vault. Governor's settle batch reads `vault.totalAssets()` for PnL math, so this is the moment NAV must be realized. If `initiateReturn()` was not called pre-settle, `_settle` falls back to a defensive in-call drain (USDC arrives next block — recover via `sweepToVault`). | Governor (proposal settlement) |
+| **Sweep** | `sweepToVault()` pushes any latecomer USDC arrivals to the vault. Callable by anyone; repeatable for partial arrivals. | Anyone |
+
+<Warning>
+**Proposer must fund the strategy with HYPE on HyperCore before `initiateReturn`.** The spot→EVM `sendAsset` action consumes HC-side gas (HYPE), per [hyper-evm-lib's `bridgeToEvm` note](https://github.com/hyperliquid-dev/hyper-evm-lib/blob/main/src/CoreWriterLib.sol). If the strategy's HC HYPE balance is zero, the bridge action silently no-ops on HC and USDC stays on HC spot indefinitely. Recommended: send a small amount of HYPE (≤0.01 HYPE is sufficient for one bridge) to the strategy's HC address right after the clone is deployed and before `_execute` runs. Recovery from a HYPE-less stranded state: fund HYPE on HC, then call public `initiateReturn()` to retry the spot→EVM leg.
+</Warning>
 
 ## Batch Calls
 
@@ -51,13 +57,21 @@ Pending → execute() → Executed → (trade actions) → settle() → Settled 
 [USDC.approve(strategy, depositAmount), strategy.execute()]
 ```
 
+### Initiate return (off-batch, before settle)
+
+```
+strategy.initiateReturn()  // proposer or anyone-after-duration
+```
+
+Wait at least 1 block for HC to process the bridge actions, then run the settle batch.
+
 ### Settle
 
 ```
 [strategy.settle()]
 ```
 
-After `settle()`, anyone can call `strategy.sweepToVault()` once the async USD transfer lands. Funds can only flow to the vault.
+After `settle()`, anyone can call `strategy.sweepToVault()` to recover any HC arrivals that landed after the settle tx. Funds can only flow to the vault.
 
 ## InitParams
 
