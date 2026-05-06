@@ -17,8 +17,8 @@ HyperEVM mainnet only.
 ```mermaid
 graph TD
     V["Vault (USDC)"] -->|"execute: pull USDC"| S["HyperliquidPerpStrategy clone"]
-    S -->|"sendUpdateLeverage"| C1["L1Write precompile"]
     S -->|"sendUsdClassTransfer"| C2["HyperCore perp margin"]
+    K["Keeper (off-chain)"] -.->|"updateLeverage via exchange API"| C2
 
     P["Proposer"] -->|"updateParams: openLong / close / setStopLoss"| S
     S -->|"sendIocOrder / sendGtcOrder"| C3["HyperCore orderbook"]
@@ -38,7 +38,7 @@ Pending → execute() → Executed → (trade actions) → settle() → Settled 
 
 | Phase | What happens | Who calls |
 |-------|-------------|-----------|
-| **Execute** | Pull USDC from vault → `sendUpdateLeverage` → `sendUsdClassTransfer` to perp margin | Governor (proposal execution) |
+| **Execute** | Pull USDC from vault → `sendUsdClassTransfer` to perp margin (leverage is set off-chain by the keeper via `updateLeverage` API call before the proposal opens — Hyperliquid's CoreWriter has no on-chain leverage action) | Governor (proposal execution) |
 | **Executed** | Proposer opens/closes positions, updates stop-loss, or lowers `minReturnAmount` via `updateParams` | Proposer only |
 | **Settle** | Close any open position + request async USD transfer back to the EVM side | Governor (proposal settlement) |
 | **Sweep** | `sweepToVault()` pushes USDC to the vault when it arrives. Callable by anyone; repeatable for partial arrivals. | Anyone |
