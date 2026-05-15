@@ -7,7 +7,7 @@ The Sherwood HTTP API exposes the same calldata encoders and read helpers the CL
 
 The API never sees your private key. Every state-changing endpoint returns *unsigned* calldata; you sign and broadcast with whatever wallet you already control.
 
-**Base URL:** `https://app.sherwood.sh/api/v1`
+**Base URL:** `https://api.sherwood.sh` (recommended) or `https://www.sherwood.sh/api/v1` (canonical, path-prefixed). Both forms hit the same Vercel deployment — `api.sherwood.sh/markets` is rewritten to `www.sherwood.sh/api/v1/markets` and back. Examples below use the short form.
 
 ## Response envelope
 
@@ -101,10 +101,10 @@ Edge-cacheable reads return state on the fly — no key required.
 
 ```bash
 # 1. Look up the vault to confirm it's open + read the asset
-curl -s 'https://app.sherwood.sh/api/v1/vaults/0xVaultAddress?chain=8453' | jq
+curl -s 'https://api.sherwood.sh/vaults/0xVaultAddress?chain=8453' | jq
 
 # 2. Prepare the calldata (returns 1–2 txs depending on current allowance)
-curl -sX POST https://app.sherwood.sh/api/v1/prepare/deposit \
+curl -sX POST https://api.sherwood.sh/prepare/deposit \
   -H 'content-type: application/json' \
   -d '{
     "chainId": 8453,
